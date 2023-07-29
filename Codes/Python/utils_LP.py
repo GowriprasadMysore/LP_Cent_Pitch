@@ -266,8 +266,15 @@ def LP_on_STFT(stfts,f,winsize_stft,nfft_size,p,f0,fs_audio):
     LP_Cent_Spect,pwd_cent_ds,aks,acorr_fft = [],[],[],[]
     for ii in range(len(stfts.T)):
         print(ii)
+        energ = sum(stfts[:,ii])
         pwd_cent_ds_, f_equi_Cent, f_Cent = cent_linear_spectrum(f,stfts[:,ii],f0)
-        h_, w_, aks_, acorr_fft_ = LP_Coeff_from_spectrum_fast(pwd_cent_ds_,winsize_stft,nfft_size,p)
+        if energ > 0.000005:
+            print('Silent frame')
+            h_, w_, aks_, acorr_fft_ = LP_Coeff_from_spectrum(pwd_cent_ds_,winsize_stft,nfft_size,p)
+        else:
+            h_ = np.zeros(int(nfft_size/2), dtype=float)
+            aks_ = np.zeros(p, dtype=float)
+            acorr_fft_ = np.zeros(p, dtype=float)
         LP_Cent_Spect.append(h_)
         pwd_cent_ds.append(pwd_cent_ds_)
         aks.append(aks_)
