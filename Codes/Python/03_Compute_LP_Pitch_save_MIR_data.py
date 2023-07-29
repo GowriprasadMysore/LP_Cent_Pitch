@@ -15,7 +15,7 @@ from matplotlib import gridspec
 import numpy.matlib
 from scipy.io import savemat
 #%%
-file_name = "audio_melody.txt"
+file_name = "audio_mix.txt"
 file1 = open(file_name, 'r')
 file_paths = file1.readlines()
 file1.close()

@@ -269,9 +269,10 @@ def LP_on_STFT(stfts,f,winsize_stft,nfft_size,p,f0,fs_audio):
         energ = sum(stfts[:,ii])
         pwd_cent_ds_, f_equi_Cent, f_Cent = cent_linear_spectrum(f,stfts[:,ii],f0)
         if energ > 0.000005:
-            print('Silent frame')
+            print('Non Silent frame')
             h_, w_, aks_, acorr_fft_ = LP_Coeff_from_spectrum(pwd_cent_ds_,winsize_stft,nfft_size,p)
         else:
+            print('Silent frame')
             h_ = np.zeros(int(nfft_size/2), dtype=float)
             aks_ = np.zeros(p, dtype=float)
             acorr_fft_ = np.zeros(p, dtype=float)
