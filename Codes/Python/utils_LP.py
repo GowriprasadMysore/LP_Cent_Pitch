@@ -389,6 +389,21 @@ def pitch_from_LP_Spectrogram(f_equi_Cent,LP_Cent_Spect,f0):
 
 
 def get_HEFD(signal):
+    """
+    
+
+    Parameters
+    ----------
+    signal : float array
+        any time series signal.
+
+    Returns
+    -------
+    mean_ACF_diff : float array
+        Hilbert Envelope of the 1st difference of the signal.
+
+    """
+    
     
     mean_ACF_diff=np.diff(np.array(signal))
 
