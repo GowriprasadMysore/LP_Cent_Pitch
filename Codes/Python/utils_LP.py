@@ -10,6 +10,8 @@ from scipy import signal
 from scipy import interpolate
 import scipy as sp
 from scipy.signal import hilbert
+import mir_eval
+
 ##
 
 #%%
@@ -174,7 +176,7 @@ def LP_Coeff_from_spectrum(pwd,winsize_stft,nfft,p=40):
     """
     
     acorr_fft = autocorr_from_spectrum(pwd,winsize_stft)
-    
+
     r = acorr_fft[0:p,];
 
     aks,e, k = levinson_1d(r, p-1)
@@ -386,12 +388,50 @@ def pitch_from_LP_Spectrogram(f_equi_Cent,LP_Cent_Spect,f0):
 
 
 
+def compute_pitch_accuracy(ref_time,ref_freq,est_time,est_freq):
+    """
+    Parameters
+    ----------
+    ref_time: np.ndarray
+    Time of each reference frequency value
+    
+    ref_freq: np.ndarray
+    Array of reference frequency values
+    
+    est_time: np.ndarray
+    Time of each estimated frequency value
+    
+    est_freq: np.ndarray
+    Array of estimated frequency values
+
+    Returns
+    -------
+    raw_pitch: float
+    Raw pitch accuracy, the fraction of voiced frames in ref_cent 
+    for which est_cent provides a correct frequency values (within cent_tolerance cents).
+
+    raw_chroma: float
+    Raw chroma accuracy, the fraction of voiced frames in ref_cent 
+    for which est_cent provides a correct frequency values (within cent_tolerance cents), ignoring octave errors
+    
+    overall_accuracy: float
+    Overall accuracy, the total fraction of correctly estimates frames, where provides a 
+    correct frequency values (within cent_tolerance).
+    """
+    
+    (ref_v, ref_c, est_v, est_c) = mir_eval.melody.to_cent_voicing(ref_time,ref_freq,est_time,est_freq)
+    
+    raw_pitch = mir_eval.melody.raw_pitch_accuracy(ref_v,ref_c,est_v,est_c)
+    
+    raw_chroma = mir_eval.melody.raw_chroma_accuracy(ref_v,ref_c,est_v,est_c)
+    
+    overall_accuracy = mir_eval.melody.overall_accuracy(ref_v, ref_c, est_v, est_c)
+
+    return raw_pitch,raw_chroma,overall_accuracy
 
 
 def get_HEFD(signal):
     """
-    
-
     Parameters
     ----------
     signal : float array
@@ -403,8 +443,6 @@ def get_HEFD(signal):
         Hilbert Envelope of the 1st difference of the signal.
 
     """
-    
-    
     mean_ACF_diff=np.diff(np.array(signal))
 
     mean_ACF_diff = hilbert(mean_ACF_diff)
