@@ -26,7 +26,7 @@ The method is particularly effective for **music with continuous pitch variation
 
 ---
 
-## Key features (Recruiter-focused)
+## Key features
 
 - Signal-processing + perception-aware design (no training data)
 - Works with approximate tonic (robust to tuning variations)
